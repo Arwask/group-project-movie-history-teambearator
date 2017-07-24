@@ -51,6 +51,7 @@ $(document).on("click", '.watchlist', function() {
 	let starsAndDeleteBtnElement = templateBuilder.makeStarsAndDelete(dataRating, movieId);
 	$(this).parent().append(starsAndDeleteBtnElement);
 	$(this).remove();
+	redrawCurrentFilter();
 });
 
 //delete button
@@ -79,6 +80,7 @@ $(document).on("click", ".rating", function() {
 	.then( function(uniqueId) {
 		movieFactory.giveMovieRating(starId, uniqueId);
 	});
+	redrawCurrentFilter();
 });
 
 //FILTER LISTENERS
@@ -152,7 +154,6 @@ $(document).on("click", ".rating", function() {
 	let movieId = $(this).parent().parent().attr('id');
 	// $(this).parent().parent().data('rating', starId);
 	$(this).parent().parent().attr('data-rating', starId);
-
 	$(this).remove();
 	movieFactory.getUniqueIds(movieId)
 	.then( function(uniqueId) {
@@ -161,6 +162,21 @@ $(document).on("click", ".rating", function() {
 	// let newRating = $(this).parent().parent().data('rating');
 	let newStarsDiv = templateBuilder.makeStarsDiv({rating:starId});
 	$(`#${movieId}`).find('.card-block').append(newStarsDiv);
-
+	redrawCurrentFilter();
 });
 
+function redrawCurrentFilter() {
+	let breadcrumb = $('#breadcrumbs').html();
+	console.log('breadcrumb', breadcrumb);
+	if (breadcrumb === (null || undefined || "") ) {
+		console.log('no filter');
+	} else if (breadcrumb === 'Untracked') {
+		showUntracked();
+		} else if (breadcrumb === 'Unwatched') {
+			showUnwatched();
+			} else if (breadcrumb === 'Watched') {
+			showWatched();
+				} else if (breadcrumb === 'Favorites') {
+					showFavorites();
+				}
+}
